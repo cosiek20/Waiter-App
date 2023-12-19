@@ -7,61 +7,65 @@ import PeopleForm from '../formComponents/PeopleForm/PeopleForm';
 import StatusForm from '../formComponents/StatusForm/StatusForm';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { changeTableSettings, changeTables } from '../../redux/TableRedux';
+import { changeTables } from '../../redux/TableRedux';
+import Loading from '../comon/Loading/Loading';
 
-const TableForm = ({ id, status, bill, peopleAmount, maxPeopleAmount }) => {
+const TableForm = props => {
 
-  const dispatch = useDispatch();
+const id = props.id;
+const dispatch = useDispatch();
 const navigate = useNavigate();
-const [statusValue, setStatusValue] = useState(status);
-const [peopleAmountValue, setPeopleAmount] = useState(peopleAmount);
-const [maxPeopleAmountValue, setMaxPeopleAmount] = useState(maxPeopleAmount);
-const [billValue, setBillValue] = useState(bill);
+const [status, setStatusValue] = useState(props.status);
+const [peopleAmount, setPeopleAmount] = useState(props.peopleAmount);
+const [maxPeopleAmount, setMaxPeopleAmount] = useState(props.maxPeopleAmount);
+const [bill, setBillValue] = useState(props.bill);
+const [IsLoading, setIsLoading] = useState(false)
 
 const handleSubmit = e => {
   e.preventDefault();
   navigate("/");
-  dispatch(changeTables(
+  dispatch(changeTables({
     id,
-    statusValue,
-    peopleAmountValue,
-    maxPeopleAmountValue,
-    billValue
-  ));
+    status,
+    peopleAmount,
+    maxPeopleAmount,
+    bill
+  }, setIsLoading));
   
   // dispatch(addList({ title,description }));
 }
 
 useEffect(() => {
-  if(peopleAmountValue < 0){
+  if(peopleAmount < 0){
   setPeopleAmount(0)
-  } else if (peopleAmountValue >= maxPeopleAmountValue){
-    setPeopleAmount(maxPeopleAmountValue)
+  } else if (peopleAmount >= maxPeopleAmount){
+    setPeopleAmount(maxPeopleAmount)
   } 
-}, [peopleAmountValue, maxPeopleAmountValue, peopleAmount]);
+}, [peopleAmount, maxPeopleAmount, props.peopleAmount]);
 
 useEffect(() => {
-  if(maxPeopleAmountValue < 0){
+  if(maxPeopleAmount < 0){
   setMaxPeopleAmount(0)
-  } else if (maxPeopleAmountValue > 10){
+  } else if (maxPeopleAmount > 10){
     setMaxPeopleAmount(10)
   }
-}, [maxPeopleAmountValue, maxPeopleAmount]);
+}, [maxPeopleAmount, props.maxPeopleAmount]);
 
 useEffect(() => {
-  if(statusValue === 'Free' || statusValue === 'Cleaning'){
+  if(status === 'Free' || status === 'Cleaning'){
     setPeopleAmount(0)
   }
-}, [statusValue])
+}, [status])
 
+  if(IsLoading === true) return (<Loading/>)
   return (
     <Form onSubmit={handleSubmit} >
       <Title>Table {id}</Title>
-      <StatusForm statusValue={statusValue} onChange={e => {
+      <StatusForm statusValue={status} onChange={e => {
         setStatusValue(e.target.value); setBillValue(0)}} />
-      <PeopleForm peopleAmountValue={peopleAmountValue} setPeopleAmount={setPeopleAmount} maxPeopleAmountValue={maxPeopleAmountValue} setMaxPeopleAmount={setMaxPeopleAmount} />
+      <PeopleForm peopleAmountValue={peopleAmount} setPeopleAmount={setPeopleAmount} maxPeopleAmountValue={maxPeopleAmount} setMaxPeopleAmount={setMaxPeopleAmount} />
 
-      {statusValue === 'Busy' ? <BillForm value={billValue} onChange={e => {setBillValue(e.target.value)}} /> : ''}
+      {status === 'Busy' ? <BillForm value={bill} onChange={e => {setBillValue(e.target.value)}} /> : ''}
       
       <Button type="submit" >Update</Button>
     </Form>

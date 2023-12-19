@@ -13,28 +13,40 @@ const UPDATE_TABLES = createActionName('UPDATE_TABLES');
 //action creators
 export const changeTableSettings = payload => ({ type: CHANGE_TABLE_SETTINGS, payload });
 export const updateTables = payload => ({type: UPDATE_TABLES, payload});
-export const fetchTables = () => {
+export const fetchTables = (setIsLoading) => {
+  console.log(setIsLoading)
+  setIsLoading(true)
   return (dispatch) => {
+    
     fetch('http://localhost:3131/api/tables')
       .then(response => response.json())
-      .then(tables => dispatch(updateTables(tables)));
+      // .then(tables => dispatch(updateTables(tables)),
+      // setIsLoading(false))
+      .then(tables => {
+        dispatch(updateTables(tables));
+        setIsLoading(false);
+      })
   }
+  
 };
-export const changeTables = payload => {
+export const changeTables = (payload, setIsLoading) => {
+  console.log(setIsLoading)
   return (dispatch) => {
+    setIsLoading(true)
     const options = {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        payload
+        ...payload
       }),
     };
     console.log(payload)
     fetch(`http://localhost:3131/tables/${payload.id}`, options)
       .then(console.log('sent'))
-      .then(dispatch(changeTableSettings(payload)));
+      .then(dispatch(changeTableSettings(payload)),
+      setIsLoading(false))
   }
 };
 
@@ -42,7 +54,7 @@ export const changeTables = payload => {
 const tableChange = (statePart = [], action) => {
   switch(action.type) {
     case CHANGE_TABLE_SETTINGS:
-      return statePart.map(table => (table.id === action.payload.id) ?  action.payload : table);
+      return statePart.map((table) => (table.id === action.payload.id) ?  { ...table, ...action.payload} : table);
       case UPDATE_TABLES:
         return [...action.payload];
     default:

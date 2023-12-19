@@ -7,7 +7,7 @@ const Table = ({ id, status }) => {
   return(
     <div className={styles.wrapper}>
       <div className={styles.info}>
-        <h1>Table {id}</h1>
+        <h2>Table {id}</h2>
         <p><span>Status: </span>{status}</p>
       </div>
 
