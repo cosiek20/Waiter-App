@@ -19,7 +19,7 @@ export const fetchTables = (setIsLoading) => {
   setIsLoading(true)
   return (dispatch) => {
     
-    fetch(`${API_URL}/api/tables`)
+    fetch(`${API_URL}/tables`)
       .then(response => response.json())
       // .then(tables => dispatch(updateTables(tables)),
       // setIsLoading(false))
