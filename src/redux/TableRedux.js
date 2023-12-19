@@ -1,3 +1,4 @@
+import { API_URL } from "../config";
 
 // selectors
 export const getAllTables = state => state.tables;
@@ -18,7 +19,7 @@ export const fetchTables = (setIsLoading) => {
   setIsLoading(true)
   return (dispatch) => {
     
-    fetch('http://localhost:3131/api/tables')
+    fetch(`${API_URL}/api/tables`)
       .then(response => response.json())
       // .then(tables => dispatch(updateTables(tables)),
       // setIsLoading(false))
@@ -43,7 +44,7 @@ export const changeTables = (payload, setIsLoading) => {
       }),
     };
     console.log(payload)
-    fetch(`http://localhost:3131/tables/${payload.id}`, options)
+    fetch(`${API_URL}/tables/${payload.id}`, options)
       .then(console.log('sent'))
       .then(dispatch(changeTableSettings(payload)),
       setIsLoading(false))
