@@ -1,3 +1,3 @@
 See live
 
-waiterappdemo.xce.pl
+https://waiter.filipwebdev.pl/
